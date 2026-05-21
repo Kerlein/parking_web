@@ -1,0 +1,112 @@
+"use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase";
+
+export default function RegisterPage() {
+  const router = useRouter();
+  const supabase = createClient();
+  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+    setError("");
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    if (!form.name.trim() || !form.email.trim() || !form.password.trim()) {
+      setError("Error en validación: todos los campos son requeridos.");
+      setLoading(false);
+      return;
+    }
+    if (form.password.length < 6) {
+      setError("Error en validación: la contraseña debe tener al menos 6 caracteres.");
+      setLoading(false);
+      return;
+    }
+
+    const { error: signUpError } = await supabase.auth.signUp({
+      email: form.email,
+      password: form.password,
+      options: { data: { full_name: form.name } },
+    });
+
+    if (signUpError) {
+  if (signUpError.message.includes("already registered")) {
+    setError("Este correo ya tiene una cuenta registrada.");
+  
+  } else if (signUpError.message.includes("invalid email")) {
+    setError("El formato del correo no es válido.");
+  }
+  setLoading(false);
+  return;
+}
+
+    setSuccess(true);
+    setTimeout(() => router.push("/auth/login"), 2000);
+    setLoading(false);
+  };
+
+  return (
+    <main className="min-h-screen flex items-center justify-center bg-[#0f0f0f]">
+      <div className="w-full max-w-md px-4">
+        <div className="mb-10 text-center">
+          <span className="inline-block text-xs tracking-[0.3em] text-[#a0a0a0] uppercase mb-4">
+            Sprint Avance · Jiménez
+          </span>
+          <h1 className="text-3xl font-bold text-white">Crear cuenta</h1>
+          <p className="text-sm text-[#666] mt-2">Registro de Usuario</p>
+        </div>
+
+        <div className="bg-[#181818] border border-[#2a2a2a] rounded-2xl p-8 shadow-2xl">
+          {success ? (
+            <div className="text-center py-8">
+              <div className="text-4xl mb-4">✓</div>
+              <p className="text-green-400 font-medium">¡Registro exitoso!</p>
+              <p className="text-[#666] text-sm mt-1">Redirigiendo al login...</p>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div>
+                <label className="block text-xs text-[#888] mb-2 tracking-wide uppercase">Nombre completo</label>
+                <input name="name" type="text" value={form.name} onChange={handleChange}
+                  placeholder="Juan Pérez"
+                  className="w-full bg-[#111] border border-[#2a2a2a] text-white rounded-lg px-4 py-3 text-sm outline-none focus:border-[#6366f1] transition-colors placeholder:text-[#3a3a3a]"/>
+              </div>
+              <div>
+                <label className="block text-xs text-[#888] mb-2 tracking-wide uppercase">Correo electrónico</label>
+                <input name="email" type="email" value={form.email} onChange={handleChange}
+                  placeholder="correo@ejemplo.com"
+                  className="w-full bg-[#111] border border-[#2a2a2a] text-white rounded-lg px-4 py-3 text-sm outline-none focus:border-[#6366f1] transition-colors placeholder:text-[#3a3a3a]"/>
+              </div>
+              <div>
+                <label className="block text-xs text-[#888] mb-2 tracking-wide uppercase">Contraseña</label>
+                <input name="password" type="password" value={form.password} onChange={handleChange}
+                  placeholder="••••••••"
+                  className="w-full bg-[#111] border border-[#2a2a2a] text-white rounded-lg px-4 py-3 text-sm outline-none focus:border-[#6366f1] transition-colors placeholder:text-[#3a3a3a]"/>
+              </div>
+              {error && (
+                <div className="bg-red-950/40 border border-red-800/50 text-red-400 text-sm rounded-lg px-4 py-3">{error}</div>
+              )}
+              <button type="submit" disabled={loading}
+                className="w-full bg-[#6366f1] hover:bg-[#5558e8] disabled:opacity-50 text-white font-medium rounded-lg py-3 text-sm transition-colors">
+                {loading ? "Registrando..." : "Crear cuenta"}
+              </button>
+            </form>
+          )}
+        </div>
+        <p className="text-center text-[#555] text-sm mt-6">
+          ¿Ya tienes cuenta?{" "}
+          <a href="/auth/login" className="text-[#6366f1] hover:underline">Inicia sesión</a>
+        </p>
+      </div>
+    </main>
+  );
+}
