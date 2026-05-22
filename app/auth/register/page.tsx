@@ -21,6 +21,7 @@ export default function RegisterPage() {
     setLoading(true);
     setError("");
 
+    // 1. Validaciones básicas locales
     if (!form.name.trim() || !form.email.trim() || !form.password.trim()) {
       setError("Error en validación: todos los campos son requeridos.");
       setLoading(false);
@@ -32,25 +33,50 @@ export default function RegisterPage() {
       return;
     }
 
-    const { error: signUpError } = await supabase.auth.signUp({
+    // 2. Registro en el módulo de autenticación (auth) de Supabase
+    const { data: authData, error: signUpError } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
-      options: { data: { full_name: form.name } },
+      options: { 
+        data: { full_name: form.name } 
+      },
     });
 
+    // Manejo robusto de errores de autenticación
     if (signUpError) {
-  if (signUpError.message.includes("already registered")) {
-    setError("Este correo ya tiene una cuenta registrada.");
-  
-  } else if (signUpError.message.includes("invalid email")) {
-    setError("El formato del correo no es válido.");
-  }
-  setLoading(false);
-  return;
-}
+      if (signUpError.message.includes("already registered")) {
+        setError("Este correo ya tiene una cuenta registrada.");
+      } else if (signUpError.message.includes("invalid email")) {
+        setError("El formato del correo no es válido.");
+      } else {
+        setError(signUpError.message); // Muestra cualquier otro error del servidor
+      }
+      setLoading(false);
+      return;
+    }
 
+    // 3. Insertar datos complementarios en la tabla pública de perfiles
+    if (authData?.user) {
+      const { error: profileError } = await supabase
+        .from("perfiles")
+        .insert([
+          {
+            id: authData.user.id, // Vincula directamente con el ID autogenerado
+            nombre_completo: form.name,
+            rol: "conductor", // Rol predeterminado para el ingreso al parqueo inteligente
+          },
+        ]);
+
+      if (profileError) {
+        setError("Cuenta de autenticación creada, pero falló el registro de perfil: " + profileError.message);
+        setLoading(false);
+        return;
+      }
+    }
+
+    // Éxito total
     setSuccess(true);
-    setTimeout(() => router.push("/auth/login"), 2000);
+    setTimeout(() => router.push("/auth/login"), 2500);
     setLoading(false);
   };
 
@@ -68,9 +94,11 @@ export default function RegisterPage() {
         <div className="bg-[#181818] border border-[#2a2a2a] rounded-2xl p-8 shadow-2xl">
           {success ? (
             <div className="text-center py-8">
-              <div className="text-4xl mb-4">✓</div>
+              <div className="text-4xl mb-4 text-green-400">✓</div>
               <p className="text-green-400 font-medium">¡Registro exitoso!</p>
-              <p className="text-[#666] text-sm mt-1">Redirigiendo al login...</p>
+              <p className="text-[#666] text-sm mt-2">
+                Verifica tu correo electrónico si la confirmación está activa o espera redirección.
+              </p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
