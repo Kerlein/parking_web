@@ -40,7 +40,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md px-4">
         <div className="mb-10 text-center">
           <span className="inline-block text-xs tracking-[0.3em] text-[#a0a0a0] uppercase mb-4">
-            Sprint Avance · Jiménez
+            Smart_Parking
           </span>
           <h1 className="text-3xl font-bold text-white">Bienvenido</h1>
           <p className="text-sm text-[#666] mt-2">Inicio de Sesión</p>

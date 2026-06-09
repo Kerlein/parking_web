@@ -103,7 +103,7 @@ const [notifications, setNotifications] = useState([
         <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#6366f1] to-purple-500 flex items-center justify-center font-bold text-xs text-white">
           J
         </div>
-        <span className="text-sm font-medium hidden sm:inline text-gray-200">Jiménez</span>
+        <span className="text-sm font-medium hidden sm:inline text-gray-200">Administrador</span>
       </button>
 
       {/* Menú Desplegable */}
@@ -111,7 +111,7 @@ const [notifications, setNotifications] = useState([
         <div className="absolute right-0 mt-3 w-56 bg-[#181818] border border-[#2a2a2a] rounded-xl shadow-2xl p-2 z-50">
           <div className="px-3 py-2 border-b border-[#2a2a2a] mb-1">
             <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Cuenta Activa</p>
-            <p className="text-sm font-semibold truncate text-white">Operador</p>
+            <p className="text-sm font-semibold truncate text-white">Administrador</p>
           </div>
           
           {/* ACCIÓN: Ir a Modificar Perfil */}
@@ -155,7 +155,7 @@ const [notifications, setNotifications] = useState([
         <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10 pb-6 border-b border-[#1f1f1f]">
           <div>
             <span className="text-xs tracking-[0.3em] text-[#888] uppercase block mb-1">
-              Sprint Avance · Smart Parking System
+              Smart Parking System
             </span>
             <h1 className="text-3xl font-extrabold tracking-tight">Panel de Control</h1>
           </div>
@@ -192,7 +192,7 @@ const [notifications, setNotifications] = useState([
           {/* GRILLA INTERACTIVA DEL ESTACIONAMIENTO */}
           <div className="lg:col-span-2 bg-[#181818] border border-[#2a2a2a] rounded-2xl p-6 shadow-xl">
             <div className="mb-6">
-              <h2 className="text-xl font-bold text-white">Monitoreo de Bahías</h2>
+              <h2 className="text-xl font-bold text-white">Monitoreo de Areas</h2>
               <p className="text-xs text-gray-500 mt-1">Haz clic en cualquier espacio para reservar o alterar su estado manualmente.</p>
             </div>
 

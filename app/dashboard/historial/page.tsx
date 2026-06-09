@@ -69,7 +69,7 @@ export default function HistorialAlprPage() {
         <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#6366f1] to-purple-500 flex items-center justify-center font-bold text-xs text-white">
           J
         </div>
-        <span className="text-sm font-medium hidden sm:inline text-gray-200">Jiménez</span>
+        <span className="text-sm font-medium hidden sm:inline text-gray-200">Administrador</span>
       </button>
 
       {showProfileMenu && (
