@@ -1,7 +1,8 @@
-"use client";
+"use client"; 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase";
+export const dynamic = "force-dynamic"; // <--- AGREGA ESTO
 
 export default function RegisterPage() {
   const router = useRouter();
